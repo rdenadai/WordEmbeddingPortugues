@@ -2,6 +2,11 @@
 
 Repositório contendo implementações e modelos prontos para utilização em projetos de língua portuguesa (pt-br)
 
+## Model
+
+Para realizar o download do modelo treinado acessar a tag: https://github.com/rdenadai/WordEmbeddingPortugues/releases/tag/0.1
+
+
 ## Extratores de frases
 
 Todos os arquivos dentro do diretório **src/data/scraping/embedding** foram criados para a extração de frases de diversas fontes da língua portuguesa.
