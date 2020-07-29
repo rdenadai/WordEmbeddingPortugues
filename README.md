@@ -4,7 +4,7 @@ Repositório contendo implementações e modelos prontos para utilização em pr
 
 ## Model
 
-Para realizar o download do modelo treinado acessar a tag: https://github.com/rdenadai/WordEmbeddingPortugues/releases/tag/0.1
+Para realizar o download do modelo treinado (latest) acessar a tag: https://github.com/rdenadai/WordEmbeddingPortugues/releases/tag/0.5
 
 
 ## Extratores de frases
