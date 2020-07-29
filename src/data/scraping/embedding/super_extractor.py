@@ -1,10 +1,9 @@
 import os
-import sys
-import time
-import pickle
+import codecs
 import asyncio
 from itertools import chain
 
+import numpy as np
 import httpx
 from bs4 import BeautifulSoup
 from aiomultiprocess import Pool
@@ -51,5 +50,5 @@ if __name__ == "__main__":
     print("Links carregados...")
     phrases = filter(None, chain(*asyncio.run(carregar(get_link_content, links))))
     phrases = [phrase for phrase in phrases if len(phrase) > 10]
-    with open(f"{os.getcwd()}/data/embedding/mundo.pkl", "wb") as fh:
-        pickle.dump(phrases, fh)
+    with codecs.open(f"{os.getcwd()}/data/embedding/mundo.txt", "wb", encoding="utf-8") as fh:
+        np.savetxt(fh, phrases, fmt="%s")

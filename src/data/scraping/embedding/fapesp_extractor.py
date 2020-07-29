@@ -1,9 +1,9 @@
 import os
-import sys
-import pickle
+import codecs
 import asyncio
 from itertools import chain
 
+import numpy as np
 import httpx
 from bs4 import BeautifulSoup
 from aiomultiprocess import Pool
@@ -46,7 +46,7 @@ async def get_links(url):
     links = []
     try:
         async with httpx.AsyncClient() as client:
-            r = await client.get(url, timeout=60)
+            r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
                 try:
@@ -70,5 +70,18 @@ if __name__ == "__main__":
     links = filter(None, chain(*asyncio.run(carregar(get_links, urls))))
     phrases = filter(None, chain(*asyncio.run(carregar(get_link_content, links))))
     phrases = [phrase for phrase in phrases if len(phrase) > 15]
-    with open(f"{os.getcwd()}/data/embedding/fapesp.pkl", "wb") as fh:
-        pickle.dump(phrases, fh)
+
+
+    try:
+        sentences = []
+        with codecs.open(f"{os.getcwd()}/data/embedding/fapesp.txt", "rb", encoding="utf-8") as fh:
+            sentences = fh.readlines()
+            sentences = [sent.strip() for sent in sentences]
+        with codecs.open(f"{os.getcwd()}/data/embedding/fapesp.txt", "wb", encoding="utf-8") as fh:
+            sents = list(set(sentences + phrases))
+            np.savetxt(fh, sents, fmt="%s")
+    except:
+        with codecs.open(f"{os.getcwd()}/data/embedding/fapesp_sec.txt", "wb", encoding="utf-8") as fh:
+            sents = list(set(phrases))
+            np.savetxt(fh, sents, fmt="%s")
+    print()

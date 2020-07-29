@@ -1,10 +1,10 @@
 import os
-import sys
 import time
-import pickle
+import codecs
 import random
 from itertools import chain
 
+import numpy as np
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from concurrent.futures import ProcessPoolExecutor
@@ -77,17 +77,17 @@ if __name__ == "__main__":
                 phrases += content.text.strip().split(".")
 
             phrases = filter(None, phrases)
-            phrases = [phrase for phrase in phrases if len(phrase) > 10]
+            phrases = [phrase for phrase in phrases if len(phrase) > 15]
 
             sentences = []
             try:
-                with open(f"{os.getcwd()}/data/embedding/bulas.pkl", "rb") as fh:
-                    sentences = pickle.load(fh)
+                with codecs.open(f"{os.getcwd()}/data/embedding/bulas.txt", "rb", encoding="utf-8") as fh:
+                    sentences = fh.readlines()
             except:
                 pass
-            with open(f"{os.getcwd()}/data/embedding/bulas.pkl", "wb") as fh:
-                sents = set(sentences + phrases)
-                pickle.dump(list(sents), fh)
+            with codecs.open(f"{os.getcwd()}/data/embedding/bulas.txt", "wb", encoding="utf-8") as fh:
+                sents = list(set(sentences + phrases))
+                np.savetxt(fh, sents, fmt="%s")
 
             time.sleep(2)
         time.sleep(5)

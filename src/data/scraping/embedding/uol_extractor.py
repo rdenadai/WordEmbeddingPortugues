@@ -1,10 +1,9 @@
 import os
-import sys
-import time
-import pickle
+import codecs
 import asyncio
 from itertools import chain
 
+import numpy as np
 import httpx
 from bs4 import BeautifulSoup
 from aiomultiprocess import Pool
@@ -63,14 +62,14 @@ if __name__ == "__main__":
 
     try:
         sentences = []
-        with open(f"{os.getcwd()}/data/embedding/uol.pkl", "rb") as fh:
-            sentences = pickle.load(fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/uol.txt", "rb", encoding="utf-8") as fh:
+            sentences = fh.readlines()
             sentences = [sent.strip() for sent in sentences]
-        with open(f"{os.getcwd()}/data/embedding/uol.pkl", "wb") as fh:
-            sents = set(sentences + phrases)
-            pickle.dump(list(sents), fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/uol.txt", "wb", encoding="utf-8") as fh:
+            sents = sorted(list(set(sentences + phrases)))
+            np.savetxt(fh, sents, fmt="%s")
     except:
-        with open(f"{os.getcwd()}/data/embedding/uol_sec.pkl", "wb") as fh:
-            sents = set(phrases)
-            pickle.dump(list(sents), fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/uol_sec.txt", "wb", encoding="utf-8") as fh:
+            sents = sorted(list(set(phrases)))
+            np.savetxt(fh, sents, fmt="%s")
     print()

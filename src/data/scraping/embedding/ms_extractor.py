@@ -1,9 +1,9 @@
 import os
-import sys
-import pickle
+import codecs
 import asyncio
 from itertools import chain
 
+import numpy as np
 import httpx
 from bs4 import BeautifulSoup
 from aiomultiprocess import Pool
@@ -17,7 +17,7 @@ async def get_links(url):
     links = []
     async with httpx.AsyncClient() as client:
         try:
-            r = await client.get(url, timeout=120)
+            r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
                 links_ = html.findAll(
@@ -34,12 +34,12 @@ async def get_content_from_links(url):
     phrases = []
     async with httpx.AsyncClient() as client:
         try:
-            r = await client.get(url, timeout=120)
+            r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
                 phrases_ = html.findAll("div", {"id": "content"})
                 for phrase in phrases_:
-                    phrases += phrase.get_text().strip().split(".")
+                    phrases += phrase.get_text(strip=True).strip().split(".")
         except Exception as e:
             print(f"1. Erro ao carregar frases: {url}, {str(e)}")
     return phrases
@@ -59,12 +59,12 @@ if __name__ == "__main__":
 
     try:
         sentences = []
-        with open(f"{os.getcwd()}/data/embedding/ministerio.pkl", "rb") as fh:
-            sentences = pickle.load(fh)
-        with open(f"{os.getcwd()}/data/embedding/ministerio.pkl", "wb") as fh:
-            sents = set(sentences + phrases)
-            pickle.dump(list(sents), fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/ministerio.txt", "rb", encoding="utf-8") as fh:
+            sentences = fh.readlines()
+        with codecs.open(f"{os.getcwd()}/data/embedding/ministerio.txt", "wb", encoding="utf-8") as fh:
+            sents = sorted(list(set(sentences + phrases)))
+            np.savetxt(fh, sents, fmt="%s")
     except:
-        with open(f"{os.getcwd()}/data/embedding/ministerio.pkl", "wb") as fh:
-            sents = set(phrases)
-            pickle.dump(list(sents), fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/ministerio.txt", "wb", encoding="utf-8") as fh:
+            sents = sorted(list(set(phrases)))
+            np.savetxt(fh, sents, fmt="%s")

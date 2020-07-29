@@ -1,10 +1,9 @@
 import os
-import sys
-import time
-import pickle
+import codecs
 import asyncio
 from itertools import chain
 
+import numpy as np
 import httpx
 from bs4 import BeautifulSoup
 from aiomultiprocess import Pool
@@ -31,15 +30,14 @@ async def get_link_content(url):
     phrases = []
     try:
         async with httpx.AsyncClient() as client:
-            r = await client.get(url, timeout=120)
+            r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
                 posts = html.findAll("div", {"class": "article_body"})
                 for post in posts:
-                    phrases += post.get_text().split(".")
+                    phrases += post.get_text(strip=True).split(".")
     except Exception as e:
-        # print(f"2. Erro ao carregar posts: {url}, {str(e)}")
-        pass
+        print(f"2. Erro ao carregar posts: {url}, {str(e)}")
     return phrases
 
 
@@ -47,7 +45,7 @@ async def get_links_pagina_inicial(url):
     links = []
     try:
         async with httpx.AsyncClient() as client:
-            r = await client.get(url, timeout=120)
+            r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
                 links_ = html.findAll("h2", {"class": "headline"})
@@ -68,13 +66,12 @@ async def get_links(url):
         d = feedparser.parse(url)
         links = [item["link"] for item in d["entries"]]
     except Exception as e:
-        # print(f"1. Erro ao carregar posts: {url}, {str(e)}")
-        pass
+        print(f"1. Erro ao carregar posts: {url}, {str(e)}")
     return links
 
 
 async def carregar(func, urls):
-    async with Pool() as pool:
+    async with Pool(processes=3) as pool:
         result = await pool.map(func, urls)
     return result
 
@@ -93,14 +90,14 @@ if __name__ == "__main__":
 
     try:
         sentences = []
-        with open(f"{os.getcwd()}/data/embedding/elpais.pkl", "rb") as fh:
-            sentences = pickle.load(fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/elpais.txt", "rb", encoding="utf-8") as fh:
+            sentences = fh.readlines()
             sentences = [sent.strip() for sent in sentences]
-        with open(f"{os.getcwd()}/data/embedding/elpais.pkl", "wb") as fh:
-            sents = list(set(sentences + phrases))
-            pickle.dump(sents, fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/elpais.txt", "wb", encoding="utf-8") as fh:
+            sents = sorted(list(set(sentences + phrases)))
+            np.savetxt(fh, sents, fmt="%s")
     except Exception as e:
-        with open(f"{os.getcwd()}/data/embedding/elpais_sec.pkl", "wb") as fh:
-            sents = set(phrases)
-            pickle.dump(list(sents), fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/elpais_sec.txt", "wb", encoding="utf-8") as fh:
+            sents = sorted(list(set(phrases)))
+            np.savetxt(fh, sents, fmt="%s")
     print()

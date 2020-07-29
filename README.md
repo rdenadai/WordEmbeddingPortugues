@@ -86,200 +86,200 @@ for word in [
 
 # -----------------------------------------------------------------------
 
-Tokens: 470098
+Tokens: 981032
 
 
 preto:
 ----------------------------
-dourado              0.69609
-cinza                0.6934
-roxo                 0.6605
+branco               0.79271
+dourado              0.75473
+cinza                0.7517
 
 branco:
 ----------------------------
-branca               0.69341
-roxo                 0.68869
-cor                  0.68784
+branca               0.79388
+preto                0.79271
+roxo                 0.75019
 
 pássaro:
 ----------------------------
-papagaio             0.85398
-elefante             0.84935
-cervo                0.83688
+pássaros             0.77602
+rouxinol             0.76595
+hipopótamo           0.76495
 
 lobo:
 ----------------------------
-grilo                0.67553
-lobos                0.67445
-papagaio             0.66639
+lobos                0.68262
+grilo                0.6768
+cervo                0.65533
 
 mulher:
 ----------------------------
-homem                0.82249
-marido               0.73247
-menina               0.71697
+homem                0.81129
+menina               0.78433
+mulheres             0.78332
 
 masculino:
 ----------------------------
-feminino             0.91455
-masculina            0.72587
-sexo                 0.72037
+feminino             0.93773
+masculina            0.78407
+masculinos           0.75772
 
 sexo:
 ----------------------------
-masculino            0.72037
-casadas              0.69381
-gays                 0.68765
+anal                 0.75536
+lésbicas             0.73125
+casadas              0.72926
 
 montanha:
 ----------------------------
-montanhas            0.79327
-cume                 0.78206
-encosta              0.76285
+montanhas            0.83201
+cume                 0.76717
+encosta              0.75054
 
 oceano:
 ----------------------------
-atlântico            0.84032
-pacífico             0.8222
-mares                0.80524
+mar                  0.85017
+atlântico            0.82862
+índico               0.80854
 
 lua:
 ----------------------------
-saturno              0.75039
-vênus                0.74862
-lunar                0.73247
+lunar                0.77559
+vênus                0.74723
+saturno              0.74295
 
 amor:
 ----------------------------
-amar                 0.83297
-felicidade           0.79607
-eterno               0.79195
+amar                 0.87775
+ternura              0.82058
+ama                  0.81664
 
 senhor:
 ----------------------------
-deus                 0.7443
-vós                  0.68096
-jacó                 0.67475
+deus                 0.81284
+bênção               0.73848
+jesus                0.7338
 
 cimegripe:
 ----------------------------
-tylemax              0.94386
-tylenol              0.93661
-resfenol             0.92632
+tylemax              0.94798
+multigrip            0.92398
+resfenol             0.91868
 
 nimesulida:
 ----------------------------
-betaciclodextrina    0.85896
-cetorolaco           0.84627
-piroxicam            0.84337
+piroxicam            0.87322
+aceclofenaco         0.85994
+cetorolaco           0.85348
 
 médico:
 ----------------------------
-prescrever           0.72763
-farmacêutico         0.72713
-enfermeiro           0.72338
+médica               0.7801
+farmacêutico         0.75659
+enfermeiro           0.74377
 
 doença:
 ----------------------------
-doenças              0.78361
-enfermidade          0.74385
-parkinson            0.67882
+enfermidade          0.8341
+doenças              0.80768
+diagnosticada        0.75124
 
 coração:
 ----------------------------
-bombear              0.65573
-peito                0.64056
-cardíaco             0.62405
+corações             0.7691
+peito                0.70349
+alma                 0.69359
 
 febre:
 ----------------------------
-calafrios            0.69845
-chikungunya          0.68675
-febril               0.68431
+gripe                0.70652
+febril               0.7033
+calafrios            0.70099
 
 dor:
 ----------------------------
-dores                0.79311
-desconforto          0.75892
-fraqueza             0.72801
+dores                0.81258
+fraqueza             0.75222
+cansaço              0.74616
 
 coriza:
 ----------------------------
-rinorreia            0.91968
-congestão            0.90853
-rinorréia            0.89808
+espirros             0.92211
+rinorreia            0.90646
+congestão            0.89289
 
 rancor:
 ----------------------------
-mágoa                0.90364
-mágoas               0.90274
-egoísmo              0.8758
+mágoa                0.90915
+ressentimento        0.88113
+mágoas               0.85594
 
 mau:
 ----------------------------
-ruim                 0.70129
-prejudicado          0.68033
-péssimo              0.65002
+mal                  0.75896
+ruim                 0.758
+bom                  0.75281
 
 ódio:
 ----------------------------
-rancor               0.81527
-desprezo             0.79735
-ressentimento        0.78899
+rancor               0.83729
+ressentimento        0.83663
+desprezo             0.8141
 
 braço:
 ----------------------------
-braços               0.73446
-esquerdo             0.5893
-cega                 0.58108
+braços               0.78534
+ombro                0.70091
+pescoço              0.69574
 
 maçã:
 ----------------------------
-fruta                0.84694
-maça                 0.82989
-abóbora              0.82285
+maça                 0.86816
+fruta                0.83217
+abacaxi              0.82906
 
 coco:
 ----------------------------
-amêndoas             0.81718
-limão                0.81387
-abacate              0.81098
+côco                 0.85456
+amêndoas             0.79517
+limão                0.77927
 
 ['lobo', 'mau']:
 ----------------------------
-ruim                 0.69736
-olhado               0.68966
-preguiçoso           0.68806
+aliás                0.70607
+cão                  0.705
+estúpido             0.70402
 
 espada:
 ----------------------------
-flecha               0.80553
-adaga                0.78984
-armadura             0.77611
+adaga                0.77907
+cavaleiro            0.74836
+espadas              0.74721
 
 cavaleiro:
 ----------------------------
-guerreiro            0.76632
-espada               0.76358
-samurai              0.76008
+cavaleiros           0.78636
+espada               0.74836
+guerreiro            0.7291
 
 rei:
 ----------------------------
-imperador            0.78201
-monarca              0.73164
-trono                0.72483
+rainha               0.78159
+trono                0.77125
+monarca              0.76254
 
 arthur:
 ----------------------------
-wallace              0.79685
-edgar                0.79551
-simon                0.79144
+wallace              0.77768
+artur                0.772
+walter               0.77049
 
 ['rei', 'arthur']:
 ----------------------------
-dario                0.76836
-herdeiro             0.75698
-conde                0.75097
+artur                0.76853
+samuel               0.73962
+conde                0.73692
 ```
 
 ## Referencias

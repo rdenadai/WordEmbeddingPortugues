@@ -1,9 +1,9 @@
 import os
-import sys
-import pickle
+import codecs
 import asyncio
 from itertools import chain
 
+import numpy as np
 import httpx
 from bs4 import BeautifulSoup
 from aiomultiprocess import Pool
@@ -130,6 +130,21 @@ main_urls = list(
             ("https://www.pensador.com/politico/", 1),
             ("https://www.pensador.com/preto/", 1),
             ("https://www.pensador.com/severo/", 1),
+            ("https://www.pensador.com/merda/", 1),
+            ("https://www.pensador.com/xingar/", 1),
+            ("https://www.pensador.com/buceta/", 1),
+            ("https://www.pensador.com/estupro/", 1),
+            ("https://www.pensador.com/estupro/", 1),
+            ("https://www.pensador.com/bicha/", 1),
+            ("https://www.pensador.com/travesti/", 1),
+            ("https://www.pensador.com/negro/", 1),
+            ("https://www.pensador.com/preto/", 1),
+            ("https://www.pensador.com/branco/", 1),
+            ("https://www.pensador.com/pinto/", 1),
+            ("https://www.pensador.com/autor/desconhecido/", 1),
+            ("https://www.pensador.com/autor/pitagoras/", 1),
+            ("https://www.pensador.com/autor/martin_luther_king/", 1),
+            ("https://www.pensador.com/recentes/", 1),
         ]
     )
 )
@@ -137,7 +152,7 @@ main_urls = list(
 urls = []
 for url, tipo in main_urls:
     urls += [url]
-    for i in range(2, 50):
+    for i in range(2, 55):
         if tipo == 0:
             urls += [f"{url}page/{i}/"]
         else:
@@ -148,7 +163,7 @@ async def get_link_content(url):
     phrases = []
     async with httpx.AsyncClient() as client:
         try:
-            r = await client.get(url, timeout=120)
+            r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
                 posts = html.findAll("p", {"class": "frase"})
@@ -156,7 +171,7 @@ async def get_link_content(url):
                     phrases += (
                         BeautifulSoup(post.get_text(), "lxml")
                         .get_text()
-                        .replace("\n", ".")
+                        .replace("\n", " ")
                         .split(".")
                     )
         except Exception as e:
@@ -174,12 +189,16 @@ if __name__ == "__main__":
     phrases = filter(None, chain(*asyncio.run(carregar(get_link_content, urls))))
     phrases = list(set([phrase.strip() for phrase in phrases if len(phrase) > 15]))
 
-    sentences = []
     try:
-        with open(f"{os.getcwd()}/data/embedding/frases.pkl", "rb") as fh:
-            sentences = pickle.load(fh)
+        sentences = []
+        with codecs.open(f"{os.getcwd()}/data/embedding/frases.txt", "rb", encoding="utf-8") as fh:
+            sentences = fh.readlines()
+            sentences = [sent.strip() for sent in sentences]
+        with codecs.open(f"{os.getcwd()}/data/embedding/frases.txt", "wb", encoding="utf-8") as fh:
+            sents = list(set(sentences + phrases))
+            np.savetxt(fh, sents, fmt="%s")
     except:
-        pass
-    with open(f"{os.getcwd()}/data/embedding/frases.pkl", "wb") as fh:
-        sents = set(sentences + phrases)
-        pickle.dump(list(sents), fh)
+        with codecs.open(f"{os.getcwd()}/data/embedding/frases_sec.txt", "wb", encoding="utf-8") as fh:
+            sents = list(set(phrases))
+            np.savetxt(fh, sents, fmt="%s")
+    print()

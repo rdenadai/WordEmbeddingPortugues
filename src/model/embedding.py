@@ -12,27 +12,27 @@ from gensim.models import Word2Vec
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from gensim.test.utils import get_tmpfile
 
-from ..data.processing.utils import CleanUp
+# from ..data.processing.utils import CleanUp
 
 
-class LoadCorpus(object):
-    """An interator that yields sentences (lists of str)."""
+# class LoadCorpus(object):
+#     """An interator that yields sentences (lists of str)."""
 
-    def __init__(self, filename):
-        self.normalizar = CleanUp(
-            remove_accentuation=False,
-            remove_4_comment=False,
-            remove_numbers=False,
-            return_tokens=True,
-        )
-        self.file_it = pd.read_csv(
-            filename, header=None, iterator=True, names=["sentence"], chunksize=30000,
-        )
+#     def __init__(self, filename):
+#         self.normalizar = CleanUp(
+#             remove_accentuation=False,
+#             remove_4_comment=False,
+#             remove_numbers=False,
+#             return_tokens=True,
+#         )
+#         self.file_it = pd.read_csv(
+#             filename, header=None, names=["sentence"], iterator=True, chunksize=30000,
+#         )
 
-    def __iter__(self):
-        for lines in self.file_it:
-            for line in lines["sentence"].tolist():
-                yield self.normalizar.fit(line)
+#     def __iter__(self):
+#         for lines in self.file_it:
+#             for line in lines["sentence"].tolist():
+#                 yield self.normalizar.fit(line)
 
 
 if __name__ == "__main__":
