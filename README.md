@@ -38,16 +38,16 @@ $> python -m spacy download pt
 
 Adicionar quais fontes, por exemplo:
 ```bash
-$> python -m src.data.scraping.g1_extractor
-$> python -m src.data.scraping.r7_extractor
-$> python -m src.data.scraping.super_extractor
-$> python -m src.data.scraping.uol_extractor
-$> python -m src.data.scraping.wiki_extractor
+$> python -m src.data.scraping.embedding.g1_extractor
+$> python -m src.data.scraping.embedding.r7_extractor
+$> python -m src.data.scraping.embedding.super_extractor
+$> python -m src.data.scraping.embedding.uol_extractor
+$> python -m src.data.scraping.embedding.wiki_extractor
 ```
 
 Realizar a compressão de todas as fontes no **corpus.txt**:
 ```bash
-$> python -m src.data.scraping.compress
+$> python -m src.data.scraping.embedding.compress
 ```
 
 Para treinar **Word2Vec**:
