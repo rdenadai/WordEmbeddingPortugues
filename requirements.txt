@@ -17,3 +17,4 @@ emoji==0.5.4
 feedparser==5.2.1
 beautifulsoup4==4.9.1
 Wikipedia-API==0.5.4
+pdftotext==2.1.5
