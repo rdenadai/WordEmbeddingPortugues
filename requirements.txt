@@ -2,7 +2,7 @@ requests==2.23.0
 httpx==0.12.1
 python-decouple==3.3
 selenium==3.141.0
-numpy==1.18.3
+numpy==1.22.0
 scipy==1.4.1
 matplotlib==3.2.1
 pandas==1.0.3
