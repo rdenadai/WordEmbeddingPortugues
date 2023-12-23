@@ -1,14 +1,11 @@
-import os
-import time
 import codecs
+import os
 import random
-from itertools import chain
+import time
 
 import numpy as np
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from concurrent.futures import ProcessPoolExecutor
-
 
 urls = []
 for p in range(10, 54):
@@ -32,7 +29,6 @@ def chrome_options():
 
 
 if __name__ == "__main__":
-
     driver = webdriver.Chrome(
         options=chrome_options(),
         executable_path=f"{os.getcwd()}/src/scraping/driver/chromedriver",

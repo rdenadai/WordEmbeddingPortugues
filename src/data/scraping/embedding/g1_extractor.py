@@ -1,14 +1,12 @@
-import os
-import codecs
 import asyncio
+import codecs
+import os
 from itertools import chain
 
-import numpy as np
-import httpx
-from bs4 import BeautifulSoup
-from aiomultiprocess import Pool
 import feedparser
-
+import numpy as np
+from aiomultiprocess import Pool
+from bs4 import BeautifulSoup
 
 rss = [
     "http://g1.globo.com/dynamo/brasil/rss2.xml",
@@ -18,7 +16,7 @@ rss = [
     "http://g1.globo.com/dynamo/economia/rss2.xml",
     "http://g1.globo.com/dynamo/mundo/rss2.xml",
     "http://g1.globo.com/dynamo/educacao/rss2.xml",
-    "hhttp://g1.globo.com/dynamo/musica/rss2.xml",
+    "http://g1.globo.com/dynamo/musica/rss2.xml",
     "http://g1.globo.com/dynamo/natureza/rss2.xml",
     "http://g1.globo.com/dynamo/planeta-bizarro/rss2.xml",
     "http://g1.globo.com/dynamo/politica/mensalao/rss2.xml",
@@ -50,16 +48,13 @@ async def get_link_content(url):
     phrases = []
     try:
         d = feedparser.parse(url)
-        phrases = [
-            BeautifulSoup(item["description"], "lxml").get_text(strip=True).split(".")
-            for item in d["entries"]
-        ]
+        phrases = [BeautifulSoup(item["description"], "lxml").get_text(strip=True).split(".") for item in d["entries"]]
     except Exception as e:
         print(f"1. Erro ao carregar posts: {url}, {str(e)}")
     return phrases
 
 
-async def carregar(func, urls):
+async def loader(func, urls):
     async with Pool() as pool:
         result = await pool.map(func, urls)
     return result
@@ -69,9 +64,12 @@ if __name__ == "__main__":
     print("Iniciando G1")
     print("-" * 30)
     phrases = list(
-        filter(None, chain(*chain(*asyncio.run(carregar(get_link_content, rss)))),)
+        filter(
+            None,
+            chain(*chain(*asyncio.run(loader(get_link_content, rss)))),
+        )
     )
-    phrases = [phrase.strip() for phrase in phrases if len(phrase) > 15]
+    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
 
     try:
         sentences = []

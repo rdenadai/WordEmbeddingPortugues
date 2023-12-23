@@ -1,13 +1,12 @@
-import os
-import codecs
 import asyncio
+import codecs
+import os
 from itertools import chain
 
-import numpy as np
 import httpx
-from bs4 import BeautifulSoup
+import numpy as np
 from aiomultiprocess import Pool
-
+from bs4 import BeautifulSoup
 
 urls = []
 url = "https://www.saude.gov.br/saude-de-a-z/"
@@ -20,9 +19,7 @@ async def get_links(url):
             r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
-                links_ = html.findAll(
-                    "a", {"class": "list-group-item list-group-item-action"}
-                )
+                links_ = html.findAll("a", {"class": "list-group-item list-group-item-action"})
                 for link in links_:
                     links.append(link.get("href"))
         except Exception as e:

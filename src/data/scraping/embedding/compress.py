@@ -1,16 +1,15 @@
+import codecs
 import os
 import time
 import warnings
-import codecs
-from functools import partial
 from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 import numpy as np
 import pandas as pd
-from nltk.corpus import machado, mac_morpho, floresta
+from nltk.corpus import floresta, mac_morpho, machado
 
 from ...processing.utils import CleanUp, divide_chunks
-
 
 warnings.filterwarnings("ignore")
 
@@ -19,30 +18,30 @@ def load_sentences(tipo, sentence):
     sentence = sentence[0] if tipo == 0 else " ".join(sentence)
     sentence = normalizar.fit(sentence)
     if len(sentence) >= 5:
-        return ' '.join(sentence).strip()
+        return " ".join(sentence).strip()
     return None
 
 
-def carregar_sentencas(fh, filename):
-    with ProcessPoolExecutor() as exc:
-        sentences = pd.read_csv(filename, header=None, sep="\\n", iterator=True, chunksize=5000)
-        for sents in sentences:
-            sentences_ = list(filter(None, exc.map(partial(load_sentences, 0), sents.to_numpy(dtype=str), chunksize=100)))
+def carregar_sentencas(exc, fh, filename):
+    if not os.path.exists(filename):
+        return
+
+    sentences = pd.read_csv(filename, header=None, sep="\\n", iterator=True, chunksize=5000)
+    for sents in sentences:
+        sentences_ = list(filter(None, exc.map(partial(load_sentences, 0), sents.to_numpy(dtype=str), chunksize=100)))
+        if len(sentences_) > 0:
+            np.savetxt(fh, sentences_, fmt="%s")
+
+
+def corpus_nltk(exc, fh, model):
+    for fileid in model.fileids():
+        for sents in divide_chunks(model.sents(fileid), 5000):
+            sentences_ = list(filter(None, exc.map(partial(load_sentences, 1), sents, chunksize=100)))
             if len(sentences_) > 0:
                 np.savetxt(fh, sentences_, fmt="%s")
 
 
-def corpus_nltk(fh, model):
-    with ProcessPoolExecutor() as exc:
-        for fileid in model.fileids():
-            for sents in divide_chunks(model.sents(fileid), 5000):
-                sentences_ = list(filter(None, exc.map(partial(load_sentences, 1), sents, chunksize=100)))
-                if len(sentences_) > 0:
-                    np.savetxt(fh, sentences_, fmt="%s")
-
-
 if __name__ == "__main__":
-
     start = time.time()
 
     print("Carregando sentenças...")
@@ -56,10 +55,10 @@ if __name__ == "__main__":
 
     with codecs.open(
         f"{os.getcwd()}/data/embedding/corpus.txt", "ab", encoding="utf-8"
-    ) as fh:
+    ) as fh, ProcessPoolExecutor() as exc:
         print("Carregando sentenças dos corpus da NLTK...")
         for md in [machado, mac_morpho, floresta]:
-            corpus_nltk(fh, md)
+            corpus_nltk(exc, fh, md)
 
         filenames = [
             f"{os.getcwd()}/data/embedding/olhar.txt",
@@ -87,6 +86,6 @@ if __name__ == "__main__":
         print("Carregando sentenças dos corpus criados...")
         for filename in filenames:
             print(f"Carregando sentenças: {filename}")
-            carregar_sentencas(fh, filename)
+            carregar_sentencas(exc, fh, filename)
 
     print(f"Tempo total da compressao: {round(time.time() - start, 2)}s")

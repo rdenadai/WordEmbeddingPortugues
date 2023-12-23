@@ -1,15 +1,13 @@
-import os
-import codecs
 import asyncio
+import codecs
+import os
 import unicodedata
 from itertools import chain
 
-import numpy as np
-import httpx
-from bs4 import BeautifulSoup
-from aiomultiprocess import Pool
 import feedparser
-
+import numpy as np
+from aiomultiprocess import Pool
+from bs4 import BeautifulSoup
 
 rss = [
     "https://olhardigital.com.br/rss",
@@ -42,7 +40,10 @@ if __name__ == "__main__":
     print("Iniciando Olhar Digital")
     print("-" * 30)
     phrases = list(
-        filter(None, chain(*chain(*asyncio.run(carregar(get_link_content, rss)))),)
+        filter(
+            None,
+            chain(*chain(*asyncio.run(carregar(get_link_content, rss)))),
+        )
     )
     phrases = [phrase.strip().replace("jpg", "") for phrase in phrases if len(phrase.split()) > 5]
 

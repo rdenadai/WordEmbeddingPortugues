@@ -1,12 +1,12 @@
-import os
-import codecs
 import asyncio
+import codecs
+import os
 from itertools import chain
 
-import numpy as np
 import httpx
-from bs4 import BeautifulSoup
+import numpy as np
 from aiomultiprocess import Pool
+from bs4 import BeautifulSoup
 
 main_urls = list(
     set(
@@ -149,14 +149,7 @@ main_urls = list(
     )
 )
 
-urls = []
-for url, tipo in main_urls:
-    urls += [url]
-    for i in range(2, 55):
-        if tipo == 0:
-            urls += [f"{url}page/{i}/"]
-        else:
-            urls += [f"{url}{i}/"]
+urls = main_urls + [f"{url}page/{i}/" if type_ == 0 else f"{url}{i}/" for i in range(2, 55) for url, type_ in main_urls]
 
 
 async def get_link_content(url):
@@ -168,26 +161,21 @@ async def get_link_content(url):
                 html = BeautifulSoup(r.content, "lxml")
                 posts = html.findAll("p", {"class": "frase"})
                 for post in posts:
-                    phrases += (
-                        BeautifulSoup(post.get_text(), "lxml")
-                        .get_text()
-                        .replace("\n", " ")
-                        .split(".")
-                    )
+                    phrases += BeautifulSoup(post.get_text(), "lxml").get_text().replace("\n", " ").split(".")
         except Exception as e:
             print(f"1. Erro ao carregar frases: {url}, {str(e)}")
     return phrases
 
 
-async def carregar(func, urls):
+async def loader(func, urls):
     async with Pool() as pool:
         result = await pool.map(func, urls)
     return result
 
 
 if __name__ == "__main__":
-    phrases = filter(None, chain(*asyncio.run(carregar(get_link_content, urls))))
-    phrases = list(set([phrase.strip() for phrase in phrases if len(phrase) > 15]))
+    phrases = filter(None, chain(*asyncio.run(loader(get_link_content, urls))))
+    phrases = list(set([pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]))
 
     try:
         sentences = []

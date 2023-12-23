@@ -1,12 +1,12 @@
-import os
-import codecs
 import asyncio
+import codecs
+import os
 from itertools import chain
 
-import numpy as np
 import httpx
-from bs4 import BeautifulSoup
+import numpy as np
 from aiomultiprocess import Pool
+from bs4 import BeautifulSoup
 
 main_urls = [
     "https://revistapesquisa.fapesp.br/category/impressa/humanidades/",
@@ -20,11 +20,7 @@ main_urls = [
     "https://revistapesquisa.fapesp.br/category/impressa/politica/",
 ]
 
-urls = []
-for url in main_urls:
-    urls += [url]
-    for i in range(2, 50):
-        urls += [f"{url}page/{i}/"]
+urls = main_urls + [f"{url}page/{i}/" for i in range(2, 50) for url in main_urls]
 
 
 async def get_link_content(url):
@@ -60,17 +56,16 @@ async def get_links(url):
     return links
 
 
-async def carregar(func, urls):
+async def loader(func, urls):
     async with Pool() as pool:
         result = await pool.map(func, urls)
     return result
 
 
 if __name__ == "__main__":
-    links = filter(None, chain(*asyncio.run(carregar(get_links, urls))))
-    phrases = filter(None, chain(*asyncio.run(carregar(get_link_content, links))))
-    phrases = [phrase for phrase in phrases if len(phrase) > 15]
-
+    links = filter(None, chain(*asyncio.run(loader(get_links, urls))))
+    phrases = filter(None, chain(*asyncio.run(loader(get_link_content, links))))
+    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
 
     try:
         sentences = []

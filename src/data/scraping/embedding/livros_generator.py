@@ -1,13 +1,11 @@
+import codecs
 import os
 import re
-import codecs
 
 import numpy as np
 import pdftotext
 
-
 if __name__ == "__main__":
-
     RM = [
         (r"\n+", r" "),
         (r"\s+", r" "),

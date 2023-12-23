@@ -1,14 +1,13 @@
-import os
-import codecs
 import asyncio
+import codecs
+import os
 from itertools import chain
 
-import numpy as np
-import httpx
-from bs4 import BeautifulSoup
-from aiomultiprocess import Pool
 import feedparser
-
+import httpx
+import numpy as np
+from aiomultiprocess import Pool
+from bs4 import BeautifulSoup
 
 rss = [
     "http://rss.uol.com.br/feed/tecnologia.xml",
@@ -46,7 +45,7 @@ async def get_links(url):
     return links
 
 
-async def carregar(func, urls):
+async def loader(func, urls):
     async with Pool() as pool:
         result = await pool.map(func, urls)
     return result
@@ -55,10 +54,10 @@ async def carregar(func, urls):
 if __name__ == "__main__":
     print("Iniciando Uol")
     print("-" * 30)
-    links = list(filter(None, chain(*asyncio.run(carregar(get_links, rss)))))
+    links = list(filter(None, chain(*asyncio.run(loader(get_links, rss)))))
     print(f"links carregados... {len(links)}")
-    phrases = filter(None, chain(*asyncio.run(carregar(get_link_content, links))))
-    phrases = [phrase.strip() for phrase in phrases if len(phrase) > 15]
+    phrases = filter(None, chain(*asyncio.run(loader(get_link_content, links))))
+    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
 
     try:
         sentences = []
