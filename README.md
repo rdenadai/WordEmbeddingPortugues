@@ -6,7 +6,6 @@ Repositório contendo implementações e modelos prontos para utilização em pr
 
 Para realizar o download do modelo treinado (latest) acessar a tag: https://github.com/rdenadai/WordEmbeddingPortugues/releases/tag/0.5
 
-
 ## Extratores de frases
 
 Todos os arquivos dentro do diretório **src/data/scraping/embedding** foram criados para a extração de frases de diversas fontes da língua portuguesa.
@@ -32,11 +31,12 @@ $> python -m nltk.downloader perluniprops
 $> python -m nltk.downloader machado
 $> python -m nltk.downloader mac_morpho
 $> python -m nltk.downloader floresta
-$> python -m spacy download en
-$> python -m spacy download pt
+$> python -m spacy download en_core_web_sm
+$> python -m spacy download pt_core_news_sm
 ```
 
 Adicionar quais fontes, por exemplo:
+
 ```bash
 $> python -m src.data.scraping.embedding.g1_extractor
 $> python -m src.data.scraping.embedding.r7_extractor
@@ -46,16 +46,19 @@ $> python -m src.data.scraping.embedding.wiki_extractor
 ```
 
 Realizar a compressão de todas as fontes no **corpus.txt**:
+
 ```bash
 $> python -m src.data.scraping.embedding.compress
 ```
 
 Para treinar **Word2Vec**:
+
 ```bash
 $> python -m src.model.embedding --model 0
 ```
 
 Para treinar **Doc2Vec**:
+
 ```bash
 $> python -m src.model.embedding --model 1
 ```
@@ -73,7 +76,7 @@ w2v = KeyedVectors.load(fname, mmap='r')
 print(f"Tokens: {len(w2v.wv.vocab.keys())}")
 
 for word in [
-    "preto", "branco", "pássaro", "lobo", "mulher", "masculino", "sexo", "montanha", "oceano", 
+    "preto", "branco", "pássaro", "lobo", "mulher", "masculino", "sexo", "montanha", "oceano",
     "lua", "amor", "senhor", "cimegripe", "nimesulida", "médico",  "doença", "coração", "febre",
     "dor", "coriza", "rancor", "mau", "ódio", "braço", "maçã", "coco", ["lobo", "mau"],
     "espada", "cavaleiro", "rei", "arthur", ["rei", "arthur"]
@@ -284,4 +287,4 @@ conde                0.73692
 
 ## Referencias
 
- - [Repositório de Word Embeddings do NILC](http://nilc.icmc.usp.br/nilc/index.php/repositorio-de-word-embeddings-do-nilc)
+- [Repositório de Word Embeddings do NILC](http://nilc.icmc.usp.br/nilc/index.php/repositorio-de-word-embeddings-do-nilc)
