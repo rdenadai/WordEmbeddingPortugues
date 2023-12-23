@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "wordembeddingportugues"
+version = "0.1.0"
+description = ""
+authors = ["Rodolfo De Nadai <rdenadai@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+httpx = "^0.25.2"
+python-decouple = "^3.8"
+selenium = "^4.15.2"
+nltk = "^3.8.1"
+pandas = "^2.1.3"
+gensim = "^4.3.2"
+spacy = "^3.7.2"
+emoji = "^2.8.0"
+numpy = "^1.26.2"
+feedparser = "^6.0.10"
+beautifulsoup4 = "^4.12.2"
+aiomultiprocess = "^0.9.0"
+pdftotext = "^2.2.2"
+wikipedia-api = "^0.6.0"
+pip = "^23.3.1"
+lxml = "^4.9.3"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+ruff = "^0.1.6"
+pylint = "^3.0.2"
+flake8 = "^6.1.0"
+mypy = "^1.7.1"
+isort = "^5.12.0"
+bandit = "^1.7.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
