@@ -26,7 +26,7 @@ def chrome_options():
 def browser_loader(url):
     print(url)
 
-    service = ChromeService(executable_path=f"{os.getcwd()}/src/scraping/driver/chromedriver")
+    service = ChromeService(executable_path=f"{os.getcwd()}/src/data/scraping/driver/chromedriver")
     driver = webdriver.Chrome(service=service, options=chrome_options())
     driver.get(url)
 
@@ -45,7 +45,7 @@ def browser_loader(url):
         medicine = elem.find_element(By.TAG_NAME, "a")
         leaflets += [medicine.get_attribute("href")]
 
-    time.sleep(1.5)
+    time.sleep(random.randint(1, 2))
 
     for leaflet in random.sample(leaflets, len(leaflets)):
         driver.get(leaflet)
@@ -77,8 +77,8 @@ def browser_loader(url):
             sents = list(set(sentences + phrases))
             np.savetxt(fh, sents, fmt="%s")
 
-        time.sleep(2)
-    time.sleep(5)
+        time.sleep(random.randint(1, 3))
+    time.sleep(random.randint(4, 6))
 
     driver.close()
 
