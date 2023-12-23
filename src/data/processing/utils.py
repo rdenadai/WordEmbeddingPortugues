@@ -1,13 +1,13 @@
 import re
-from unicodedata import normalize
-from string import punctuation
 from functools import lru_cache
+from string import punctuation
+from unicodedata import normalize
 
+import emoji
 import nltk
+import spacy
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-import spacy
-import emoji
 
 
 def divide_chunks(lista, n):
@@ -208,7 +208,7 @@ class CleanUp:
             phrase = re.sub(o, r, phrase, flags=re.MULTILINE)
         # Remoção de emojis
         if self.remove_emojis:
-            phrase = emoji.get_emoji_regexp().sub(r"", phrase)
+            phrase = emoji.replace_emoji(phrase, "")
         if self.remove_stopwords:
             for stw in self.STOPWORDS:
                 phrase = re.sub(r"\b{}\b".format(stw), "", phrase, flags=re.MULTILINE)
@@ -227,23 +227,19 @@ class CleanUp:
             for palavra in phrase:
                 if len(palavra) > 2:
                     if self.lemmatizer:
-                        palavra = "".join(
-                            [word.lemma_ for word in self.lemmatizer(palavra)]
-                        )
+                        palavra = "".join([word.lemma_ for word in self.lemmatizer(palavra)])
                     if self.stemmer:
                         clfa(self.stemmer.stem(palavra))
                     else:
                         clfa(palavra)
-            clean_frase = (
-                " ".join(clean_frase).strip() if not self.return_tokens else clean_frase
-            )
+            clean_frase = " ".join(clean_frase).strip() if not self.return_tokens else clean_frase
         elif self.return_tokens:
             clean_frase = word_tokenize(phrase)
         return clean_frase
 
 
 # GLOBALS
-NLP_LEMMATIZER = spacy.load("pt")
+NLP_LEMMATIZER = spacy.load("pt_core_news_sm")
 RSLP_STEMMER = nltk.stem.RSLPStemmer()
 SNOWBALL_STEMMER = nltk.stem.SnowballStemmer("portuguese")
 STOPWORDS, PUNCT = get_stopwords()
