@@ -38,10 +38,12 @@ $> python -m spacy download pt_core_news_sm
 Adicionar quais fontes, por exemplo:
 
 ```bash
-$> python -m src.data.scraping.embedding.g1_extractor
-$> python -m src.data.scraping.embedding.r7_extractor
+$> python -m src.data.scraping.embedding.g1_extractor && python -m src.data.scraping.embedding.r7_extractor && python -m src.data.scraping.embedding.uol_extractor && python -m src.data.scraping.embedding.olhar_extractor
+$> python -m src.data.scraping.embedding.ms_extractor
+$> python -m src.data.scraping.embedding.history_extractor
 $> python -m src.data.scraping.embedding.super_extractor
-$> python -m src.data.scraping.embedding.uol_extractor
+$> python -m src.data.scraping.embedding.fapesp_extractor
+$> python -m src.data.scraping.embedding.frases_extractor
 $> python -m src.data.scraping.embedding.wiki_extractor
 ```
 
