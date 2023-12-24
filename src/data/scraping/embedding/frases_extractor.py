@@ -1,12 +1,10 @@
 import asyncio
-import codecs
-import os
 from itertools import chain
 
 import httpx
-import numpy as np
-from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import loader, save_phrases
 
 main_urls = list(
     set(
@@ -149,7 +147,9 @@ main_urls = list(
     )
 )
 
-urls = main_urls + [f"{url}page/{i}/" if type_ == 0 else f"{url}{i}/" for i in range(2, 55) for url, type_ in main_urls]
+urls = [url for url, p in main_urls] + [
+    f"{url}page/{i}/" if type_ == 0 else f"{url}{i}/" for i in range(2, 55) for url, type_ in main_urls
+]
 
 
 async def get_link_content(url):
@@ -159,34 +159,19 @@ async def get_link_content(url):
             r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
-                posts = html.findAll("p", {"class": "frase"})
+                if not (posts := html.findAll("p", {"class": "frase"})):
+                    posts = html.findAll("div", {"class": "card"})
                 for post in posts:
-                    phrases += BeautifulSoup(post.get_text(), "lxml").get_text().replace("\n", " ").split(".")
+                    phrases += (
+                        BeautifulSoup(post.get_text().strip(), "lxml").get_text().strip().replace("\n", " ").split(".")
+                    )
         except Exception as e:
             print(f"1. Erro ao carregar frases: {url}, {str(e)}")
     return phrases
 
 
-async def loader(func, urls):
-    async with Pool() as pool:
-        result = await pool.map(func, urls)
-    return result
-
-
 if __name__ == "__main__":
     phrases = filter(None, chain(*asyncio.run(loader(get_link_content, urls))))
     phrases = list(set([pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]))
-
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/frases.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-            sentences = [sent.strip() for sent in sentences]
-        with codecs.open(f"{os.getcwd()}/data/embedding/frases.txt", "wb", encoding="utf-8") as fh:
-            sents = list(set(sentences + phrases))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/frases_sec.txt", "wb", encoding="utf-8") as fh:
-            sents = list(set(phrases))
-            np.savetxt(fh, sents, fmt="%s")
+    save_phrases(phrases, "/data/embedding/frases.txt")
     print()

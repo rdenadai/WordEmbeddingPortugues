@@ -1,13 +1,12 @@
 import asyncio
-import codecs
-import os
 import unicodedata
 from itertools import chain
 
 import feedparser
-import numpy as np
 from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import save_phrases
 
 rss = [
     "https://olhardigital.com.br/rss",
@@ -45,18 +44,6 @@ if __name__ == "__main__":
             chain(*chain(*asyncio.run(carregar(get_link_content, rss)))),
         )
     )
-    phrases = [phrase.strip().replace("jpg", "") for phrase in phrases if len(phrase.split()) > 5]
-
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/olhar.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-            sentences = [sent.strip() for sent in sentences]
-        with codecs.open(f"{os.getcwd()}/data/embedding/olhar.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(sentences + phrases)))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/olhar_sec.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(phrases)))
-            np.savetxt(fh, sents, fmt="%s")
+    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip().replace("jpg", "")) > 10]
+    save_phrases(phrases, "/data/embedding/olhar.txt")
     print()

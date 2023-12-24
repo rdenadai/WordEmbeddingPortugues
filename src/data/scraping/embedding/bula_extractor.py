@@ -1,14 +1,14 @@
-import codecs
 import os
 import random
 import time
 from concurrent.futures import ProcessPoolExecutor
 from string import ascii_lowercase
 
-import numpy as np
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
+
+from .utils import chunks, save_phrases
 
 
 def chrome_options():
@@ -67,25 +67,11 @@ def browser_loader(url):
         phrases = filter(None, phrases)
         phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
 
-        sentences = []
-        try:
-            with codecs.open(f"{os.getcwd()}/data/embedding/bulas.txt", "rb", encoding="utf-8") as fh:
-                sentences = fh.readlines()
-        except:
-            pass
-        with codecs.open(f"{os.getcwd()}/data/embedding/bulas.txt", "wb", encoding="utf-8") as fh:
-            sents = list(set(sentences + phrases))
-            np.savetxt(fh, sents, fmt="%s")
-
+        save_phrases(phrases, "/data/embedding/bulas.txt")
         time.sleep(random.randint(1, 3))
     time.sleep(random.randint(4, 6))
 
     driver.close()
-
-
-def chunks(lst, n):
-    for i in range(0, len(lst), n):
-        yield lst[i : i + n]
 
 
 if __name__ == "__main__":

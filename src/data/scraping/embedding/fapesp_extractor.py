@@ -1,12 +1,10 @@
 import asyncio
-import codecs
-import os
 from itertools import chain
 
 import httpx
-import numpy as np
-from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import chunks, loader, save_phrases
 
 main_urls = [
     "https://revistapesquisa.fapesp.br/category/impressa/humanidades/",
@@ -32,7 +30,7 @@ async def get_link_content(url):
                 html = BeautifulSoup(r.content, "lxml")
                 posts = html.findAll("div", {"class": "post-content"})
                 for post in posts:
-                    phrases += post.get_text().split(".")
+                    phrases += post.get_text().strip().split(".")
     except Exception as e:
         print(f"2. Erro ao carregar frases: {url}, {str(e)}")
     return phrases
@@ -56,27 +54,10 @@ async def get_links(url):
     return links
 
 
-async def loader(func, urls):
-    async with Pool() as pool:
-        result = await pool.map(func, urls)
-    return result
-
-
 if __name__ == "__main__":
-    links = filter(None, chain(*asyncio.run(loader(get_links, urls))))
-    phrases = filter(None, chain(*asyncio.run(loader(get_link_content, links))))
-    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
-
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/fapesp.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-            sentences = [sent.strip() for sent in sentences]
-        with codecs.open(f"{os.getcwd()}/data/embedding/fapesp.txt", "wb", encoding="utf-8") as fh:
-            sents = list(set(sentences + phrases))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/fapesp_sec.txt", "wb", encoding="utf-8") as fh:
-            sents = list(set(phrases))
-            np.savetxt(fh, sents, fmt="%s")
+    for chunked in chunks(urls, 10):
+        links = filter(None, chain(*asyncio.run(loader(get_links, chunked))))
+        phrases = filter(None, chain(*asyncio.run(loader(get_link_content, links))))
+        phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
+        save_phrases("/data/embedding/fapesp.txt", phrases)
     print()

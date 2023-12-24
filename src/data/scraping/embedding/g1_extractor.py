@@ -1,12 +1,10 @@
 import asyncio
-import codecs
-import os
 from itertools import chain
 
 import feedparser
-import numpy as np
-from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import loader, save_phrases
 
 rss = [
     "http://g1.globo.com/dynamo/brasil/rss2.xml",
@@ -54,12 +52,6 @@ async def get_link_content(url):
     return phrases
 
 
-async def loader(func, urls):
-    async with Pool() as pool:
-        result = await pool.map(func, urls)
-    return result
-
-
 if __name__ == "__main__":
     print("Iniciando G1")
     print("-" * 30)
@@ -70,17 +62,5 @@ if __name__ == "__main__":
         )
     )
     phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
-
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/g1.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-            sentences = [sent.strip() for sent in sentences]
-        with codecs.open(f"{os.getcwd()}/data/embedding/g1.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(sentences + phrases)))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/g1_sec.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(phrases)))
-            np.savetxt(fh, sents, fmt="%s")
+    save_phrases(phrases, "/data/embedding/g1.txt")
     print()

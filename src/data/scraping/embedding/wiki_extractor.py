@@ -1,13 +1,11 @@
 import asyncio
-import codecs
-import os
 from itertools import chain
 from sys import setrecursionlimit
 
-import numpy as np
 import wikipediaapi
-from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import chunks, loader, save_phrases
 
 setrecursionlimit(20_000)
 
@@ -74,17 +72,6 @@ def get_category_members(categorymembers, level=0, max_level=1):
     return pages
 
 
-async def loader(func, urls):
-    async with Pool() as pool:
-        result = await pool.map(func, urls)
-    return result
-
-
-def chunks(lst, n):
-    for i in range(0, len(lst), n):
-        yield lst[i : i + n]
-
-
 if __name__ == "__main__":
     print("Iniciando Wikipedia")
     print("-" * 30)
@@ -105,12 +92,6 @@ if __name__ == "__main__":
 
     for chunked in chunks(terms, 100):
         phrases = list(filter(None, chain(*asyncio.run(loader(load_wiki, chunked)))))
-        sentences = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
-        try:
-            with codecs.open(f"{os.getcwd()}/data/embedding/wikipedia.txt", "rb", encoding="utf-8") as fh:
-                sentences = fh.readlines()
-        except:
-            pass
-        with codecs.open(f"{os.getcwd()}/data/embedding/wikipedia.txt", "wb", encoding="utf-8") as fh:
-            sents = list(set(sentences + phrases))
-            np.savetxt(fh, sents, fmt="%s")
+        phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
+        save_phrases(phrases, "/data/embedding/wikipedia.txt")
+    print()

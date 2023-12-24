@@ -14,15 +14,15 @@ from ...processing.utils import CleanUp, divide_chunks
 warnings.filterwarnings("ignore")
 
 
-def load_sentences(tipo, sentence):
-    sentence = sentence[0] if tipo == 0 else " ".join(sentence)
-    sentence = normalizar.fit(sentence)
+def load_sentences(type_, sentence):
+    sentence = sentence[0] if type_ == 0 else " ".join(sentence)
+    sentence = cleanup.fit(sentence)
     if len(sentence) >= 5:
         return " ".join(sentence).strip()
     return None
 
 
-def carregar_sentencas(exc, fh, filename):
+def load_sentences_files(exc, fh, filename):
     if not os.path.exists(filename):
         return
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     print("Carregando sentenças...")
 
-    normalizar = CleanUp(
+    cleanup = CleanUp(
         remove_accentuation=False,
         remove_4_comment=False,
         remove_numbers=False,
@@ -86,6 +86,6 @@ if __name__ == "__main__":
         print("Carregando sentenças dos corpus criados...")
         for filename in filenames:
             print(f"Carregando sentenças: {filename}")
-            carregar_sentencas(exc, fh, filename)
+            load_sentences_files(exc, fh, filename)
 
     print(f"Tempo total da compressao: {round(time.time() - start, 2)}s")

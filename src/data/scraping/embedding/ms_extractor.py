@@ -1,15 +1,15 @@
 import asyncio
-import codecs
-import os
 from itertools import chain
+from string import ascii_lowercase
 
 import httpx
-import numpy as np
 from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
 
-urls = []
-url = "https://www.saude.gov.br/saude-de-a-z/"
+from .utils import save_phrases
+
+url = "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z"
+urls = [f"{url}/{l}" for l in ascii_lowercase]
 
 
 async def get_links(url):
@@ -19,9 +19,12 @@ async def get_links(url):
             r = await client.get(url, timeout=240)
             if r.status_code == 200:
                 html = BeautifulSoup(r.content, "lxml")
-                links_ = html.findAll("a", {"class": "list-group-item list-group-item-action"})
+                links_ = html.findAll("a", {"class": "govbr-card-content"})
                 for link in links_:
-                    links.append(link.get("href"))
+                    href = link.get("href")
+                    if "https://www.gov.br" not in href:
+                        href = f"https://www.gov.br{href}"
+                    links.append(href)
         except Exception as e:
             print(f"1. Erro ao carregar frases: {url}, {str(e)}")
     return links
@@ -50,18 +53,9 @@ async def carregar(func, urls):
 
 if __name__ == "__main__":
     print("Iniciando Ministerio da Saude:")
-    links = filter(None, chain(*asyncio.run(carregar(get_links, [url]))))
+    links = filter(None, chain(*asyncio.run(carregar(get_links, urls))))
     phrases = filter(None, chain(*asyncio.run(carregar(get_content_from_links, links))))
-    phrases = list(set([phrase.strip() for phrase in phrases if len(phrase) > 10]))
+    phrases = list(set([pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]))
 
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/ministerio.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-        with codecs.open(f"{os.getcwd()}/data/embedding/ministerio.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(sentences + phrases)))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/ministerio.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(phrases)))
-            np.savetxt(fh, sents, fmt="%s")
+    save_phrases(phrases, "/data/embedding/ministerio.txt")
+    print()

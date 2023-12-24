@@ -1,13 +1,11 @@
 import asyncio
-import codecs
-import os
 from itertools import chain
 
 import feedparser
 import httpx
-import numpy as np
-from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import loader, save_phrases
 
 rss = [
     "http://rss.uol.com.br/feed/tecnologia.xml",
@@ -45,12 +43,6 @@ async def get_links(url):
     return links
 
 
-async def loader(func, urls):
-    async with Pool() as pool:
-        result = await pool.map(func, urls)
-    return result
-
-
 if __name__ == "__main__":
     print("Iniciando Uol")
     print("-" * 30)
@@ -58,17 +50,5 @@ if __name__ == "__main__":
     print(f"links carregados... {len(links)}")
     phrases = filter(None, chain(*asyncio.run(loader(get_link_content, links))))
     phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
-
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/uol.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-            sentences = [sent.strip() for sent in sentences]
-        with codecs.open(f"{os.getcwd()}/data/embedding/uol.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(sentences + phrases)))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/uol_sec.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(phrases)))
-            np.savetxt(fh, sents, fmt="%s")
+    save_phrases(phrases, "/data/embedding/uol.txt")
     print()

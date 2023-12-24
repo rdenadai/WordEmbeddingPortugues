@@ -1,13 +1,11 @@
 import asyncio
-import codecs
-import os
 import unicodedata
 from itertools import chain
 
 import feedparser
-import numpy as np
-from aiomultiprocess import Pool
 from bs4 import BeautifulSoup
+
+from .utils import loader, save_phrases
 
 rss = [
     "https://noticias.r7.com/hora-7/feed.xml",
@@ -39,12 +37,6 @@ async def get_link_content(url):
     return phrases
 
 
-async def loader(func, urls):
-    async with Pool() as pool:
-        result = await pool.map(func, urls)
-    return result
-
-
 if __name__ == "__main__":
     print("Iniciando R7")
     print("-" * 30)
@@ -55,17 +47,5 @@ if __name__ == "__main__":
         )
     )
     phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
-
-    try:
-        sentences = []
-        with codecs.open(f"{os.getcwd()}/data/embedding/r7.txt", "rb", encoding="utf-8") as fh:
-            sentences = fh.readlines()
-            sentences = [sent.strip() for sent in sentences if len(sent.split()) > 5]
-        with codecs.open(f"{os.getcwd()}/data/embedding/r7.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(filter(None, sentences + phrases))))
-            np.savetxt(fh, sents, fmt="%s")
-    except:
-        with codecs.open(f"{os.getcwd()}/data/embedding/r7_sec.txt", "wb", encoding="utf-8") as fh:
-            sents = sorted(list(set(phrases)))
-            np.savetxt(fh, sents, fmt="%s")
+    save_phrases(phrases, "/data/embedding/r7.txt")
     print()
