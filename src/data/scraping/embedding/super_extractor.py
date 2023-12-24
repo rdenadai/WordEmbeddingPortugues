@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from .utils import loader, save_phrases
 
-urls = [f"https://super.abril.com.br/superarquivo/{i}/" for i in range(1, 3)]
+urls = [f"https://super.abril.com.br/superarquivo/{i}/" for i in range(1, 459)]
 
 
 async def get_link_content(url):
@@ -43,6 +43,6 @@ if __name__ == "__main__":
     links = list(filter(None, chain(*asyncio.run(loader(get_links, urls)))))
     print("Links carregados...")
     phrases = filter(None, chain(*asyncio.run(loader(get_link_content, links))))
-    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 10]
+    phrases = [pphrase for phrase in phrases if len(pphrase := phrase.strip()) > 5]
     save_phrases(phrases, "/data/embedding/mundo.txt")
     print()

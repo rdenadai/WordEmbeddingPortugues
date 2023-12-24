@@ -3,7 +3,7 @@ import os
 import re
 
 import numpy as np
-import pdftotext
+from pdftotext import PDF
 
 if __name__ == "__main__":
     RM = [
@@ -12,22 +12,23 @@ if __name__ == "__main__":
         (r"(http[s]*?:\/\/)+[0-9a-zA-Z.-_\/?=]*\s*", r""),  # urls
     ]
 
-    with codecs.open(f"{os.getcwd()}/data/embedding/livros.txt", "wb", encoding="utf-8") as fh:
+    filename = f"{os.getcwd()}/data/embedding/livros.txt"
+
+    with codecs.open(filename, "wb", encoding="utf-8") as fh:
         path = f"{os.getcwd()}/data/corpus/pdf/"
         for root, dirs, files in os.walk(path):
-            for filename in files:
-                with open(f"{path}/{filename}", "rb") as f:
+            for book_name in files:
+                with open(f"{path}/{book_name}", "rb") as f:
                     sentences = []
                     try:
-                        pdf = pdftotext.PDF(f)
+                        pdf = PDF(f)
                         for page in pdf:
                             for s, e in RM:
                                 page = re.sub(s, e, page)
-                        for phrase in page.strip().split("."):
-                            phrase = phrase.strip()
-                            if len(phrase.split()) > 5:
-                                sentences += [phrase]
-                    except:
-                        print(filename)
-                    sentences = list(set(filter(None, sentences)))
+                            for phrase in page.strip().split("."):
+                                if len(phrase := phrase.strip()) > 10:
+                                    sentences.append(phrase)
+                    except Exception as e:
+                        print(book_name, str(e))
+                    sentences = list(sorted(set(filter(None, sentences))))
                     np.savetxt(fh, sentences, fmt="%s")
