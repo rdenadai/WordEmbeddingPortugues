@@ -25,6 +25,8 @@ wikipedia-api = "^0.6.0"
 pip = "^23.3.1"
 lxml = "^4.9.3"
 arrow = "^1.3.0"
+datasets = "^2.16.0"
+zstandard = "^0.22.0"
 
 
 [tool.poetry.group.dev.dependencies]
