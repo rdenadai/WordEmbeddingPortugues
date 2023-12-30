@@ -16,6 +16,16 @@ Todos os arquivos devem ser unidos em um único nomeado **corpus.txt** usando pa
 
 Posteriormente este arquivo pode ser utilizado para o treinamento de um modelo Word2Vec ou Doc2Vec conforme implementado dentro do diretório **src/model/embedding.py**.
 
+## Datasets
+
+- [por-br_newscrawl_2011_1M-sentences.txt](https://www.ime.usp.br/~yoshi/2023i/mac2166/sandbox/2023.06.20/DATA/LEIPZIG_PT_BR/1M/)
+
+- [Fapesp Corpora](http://www.nilc.icmc.usp.br/nilc/tools/Fapesp%20Corpora.htm)
+
+- [OSCAR](https://oscar-project.org/)
+
+- [BRWAC](https://www.inf.ufrgs.br/pln/wiki/index.php?title=BrWaC#Current_version)
+
 ## Como executar
 
 Instalar dependencias:
