@@ -32,7 +32,7 @@ def get_stopwords():
     rms = ["um", "não", "mais", "muito", "sem", "estou", "sou"]
     for rm in rms:
         del stpwords[stpwords.index(rm)]
-    for rm in ["?", "!", ","]:
+    for rm in ["?", "!", ",", ";", ":", "'", '"']:
         del punkt[punkt.index(rm)]
     return stpwords, punkt
 
@@ -203,6 +203,10 @@ class CleanUp:
         phrase = phrase.lower()
         phrase = phrase.replace("?", " ? ")
         phrase = phrase.replace("!", " ! ")
+        phrase = phrase.replace("'", " ' ")
+        phrase = phrase.replace('"', ' " ')
+        phrase = phrase.replace(";", " ; ")
+        phrase = phrase.replace(":", " : ")
         # Remove strings padrão existente, como urls
         for o, r in self.RM:
             phrase = re.sub(o, r, phrase, flags=re.MULTILINE)
