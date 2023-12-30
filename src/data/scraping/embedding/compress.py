@@ -78,9 +78,9 @@ if __name__ == "__main__":
             f"{os.getcwd()}/data/embedding/copiados_manualmente.txt",
             f"{os.getcwd()}/data/embedding/temario_2.txt",
             f"{os.getcwd()}/data/embedding/frases_outras.txt",
+            f"{os.getcwd()}/data/embedding/fapesp_corpora.txt",
             f"{os.getcwd()}/data/embedding/por-br_newscrawl_2011_1M-sentences.txt",
-            f"{os.getcwd()}/data/embedding/por_wikipedia_2016_1M-sentences.txt",
-            f"{os.getcwd()}/data/embedding/pt_dedup_part.txt",
+            f"{os.getcwd()}/data/embedding/pt_oscar_part.txt",
         ]
 
         print("Carregando sentenças dos corpus criados...")
