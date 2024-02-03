@@ -57,6 +57,14 @@ $> python -m src.data.scraping.embedding.frases_extractor
 $> python -m src.data.scraping.embedding.wiki_extractor
 ```
 
+Se você tiver livros em português para agregar ao **corpus.txt**:
+
+Coloque os livros em: `/data/corpus/pdf`.
+
+```bash
+$> python -m src.data.scraping.embedding.livros_generator
+```
+
 Realizar a compressão de todas as fontes no **corpus.txt**:
 
 ```bash
